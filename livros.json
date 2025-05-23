@@ -1,7 +1,18 @@
 {
- "titulo": "sal",
- "autor": "sla",
- "ano_publicacao": "2010",
- "id": "7282",
- "status": "Disponivel"
+ "lista_livros": [
+  {
+   "titulo": "sla",
+   "autor": "oia",
+   "ano_publicacao": "2020",
+   "id": "9391",
+   "status": "Disponivel"
+  },
+  {
+   "titulo": "alex",
+   "autor": "teixeira",
+   "ano_publicacao": "2100",
+   "id": "8232",
+   "status": "Disponivel"
+  }
+ ]
 }

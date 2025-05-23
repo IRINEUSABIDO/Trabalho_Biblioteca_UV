@@ -1,4 +1,5 @@
 import json
+
 class Livro:
     def __init__(self, titulo, autor, ano_publicacao, ID, status="Disponível"):
         self.titulo = titulo
@@ -29,8 +30,15 @@ class Biblioteca:
             "id": livro.ID,
             "status": livro.status
         }
+        with open("livros.json", "r") as f:
+            data = json.loads(f.read())
+
+
+        data["lista_livros"].append(livroDict)
+
+
         with open("livros.json", "w") as f:
-            f.write(json.dumps(livroDict, indent=1))
+            f.write(json.dumps(data, indent=1))
 
     def remover_livro(self, livro):
         pass

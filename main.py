@@ -1,7 +1,15 @@
 from biblioteca import Biblioteca, Livro
 import random
-nomeBiblioteca = input("Digite o nome da biblioteca: ")
-biblioteca = Biblioteca(nomeBiblioteca)
+import json
+
+biblioteca = Biblioteca("Alex Library")
+
+with open ("livros.json", "w") as f:
+    f.write(json.dumps({ "lista_livros" : [
+
+    ]}, indent=1))
+
+
 
 def main():
     print("\nGerenciador de Biblioteca\n" )
