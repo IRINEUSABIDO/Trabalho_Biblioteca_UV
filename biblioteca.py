@@ -21,7 +21,6 @@ class Biblioteca:
         self.nome = nome
 
     def adicionar_livro(self, livro):
-        # save_to_json
         livroDict = {
             "titulo": livro.titulo,
             "autor": livro.autor,
@@ -56,6 +55,8 @@ class Biblioteca:
     def editar_livro(self, novo_titulo, novo_autor, novo_ano_publicacao, livroID):
         with open("livros.json", "r") as f:
             data = json.loads(f.read())
+
+        with open("livros.json", "r") as f:
             data2 = json.loads(f.read())
 
         for livro in data["lista_livros"]:
@@ -64,9 +65,8 @@ class Biblioteca:
                 livro["autor"] = novo_autor
                 livro["ano_publicacao"] = novo_ano_publicacao
 
-        if data == data2:
+        if data["lista_livros"] == data2["lista_livros"]:
             return False
-
         else:
             with open("livros.json", "w") as f:
                 f.write(json.dumps(data, indent=1))
@@ -74,7 +74,6 @@ class Biblioteca:
             return True
 
     def listar_livros(self):
-        # load_from_json
         with open("livros.json", "r") as f:
             data = json.loads(f.read())
             if data == "":
