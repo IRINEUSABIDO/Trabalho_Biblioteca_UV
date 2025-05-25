@@ -1,6 +1,4 @@
-import json
 import utils
-
 
 class Livro:
     def __init__(self, titulo, autor, ano_publicacao, ID, status="Disponível"):
