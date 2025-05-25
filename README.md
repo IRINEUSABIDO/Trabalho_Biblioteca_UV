@@ -1,5 +1,5 @@
 # Gerenciamento de Biblioteca com python
-Trabalho de Progamaçao orienta a objeto
+Trabalho de Programaçao orienta a objeto
 
 # Libs usadas
     - sys
