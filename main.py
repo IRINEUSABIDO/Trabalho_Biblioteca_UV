@@ -1,4 +1,5 @@
 from biblioteca import Biblioteca, Livro
+import utils
 import random
 import json
 
@@ -27,63 +28,68 @@ def main():
             livroAutor = input("Digite o autor do livro: ")
             livroAnoDePublicacao = input("Digite o ano de publicação do livro: ")
 
-            if livroAnoDePublicacao.isdigit() == False:
-                print("Por favor digite um numero valido")
+            if utils.verificar_ano_de_publicacao(livroAnoDePublicacao) == False:
+                print("Digite um ano de publicaçao valido")
 
-            with open("livros.json", "r") as f:
-                data = json.loads(f.read())
+            else:
+                data = utils.ler_dados()
                 randomID = str(random.randint(1000, 9999))
+
                 for livro in data["lista_livros"]:
                     if livro["id"] == randomID:
                         randomID = str(random.randint(1000, 9999))
 
-            NovoLivro = Livro(
-                livroTitulo, livroAutor, livroAnoDePublicacao, randomID, "Disponivel"
-            )
-            biblioteca.adicionar_livro(NovoLivro)
+                NovoLivro = Livro(
+                    livroTitulo,
+                    livroAutor,
+                    livroAnoDePublicacao,
+                    randomID,
+                    "Disponivel",
+                )
+                print(biblioteca.adicionar_livro(NovoLivro))
 
         elif opcao == "2":
             biblioteca.listar_livros()
 
         elif opcao == "3":
-            livroID = input("Digite o ID do livro que deseja editar: ")
-            livroNovoTitulo = input("Digite o novo título do livro: ")
-            livroNovoAutor = input("Digite o novo autor do livro: ")
-            livroNovoAnoDePublicacao = input(
+            livro_ID = input("Digite o ID do livro que deseja editar: ")
+            livro_novo_titulo = input("Digite o novo título do livro: ")
+            livro_novo_autor = input("Digite o novo autor do livro: ")
+            livro_novo_ano_de_publicacao = input(
                 "Digite o novo ano de publicação do livro: "
             )
 
-            if livroNovoAnoDePublicacao.isdigit() == False:
-                print("Por favor digite um numero de publicaçao valido")
+            if utils.verificar_ano_de_publicacao(livro_novo_ano_de_publicacao) == False:
+                print("Digite um ano de publicaçao valido")
 
-            elif livroID.isdigit() == False:
-                print("Por favor digite um numero de ID valido")
+            elif utils.verificar_id(livro_ID) == False:
+                print("Digite um ID valido")
 
             else:
 
                 try:
-                    print(biblioteca.editar_livro(
-                        livroNovoTitulo,
-                        livroNovoAutor,
-                        livroNovoAnoDePublicacao,
-                        livroID,
-                    ))
+                    print(
+                        biblioteca.editar_livro(
+                            livro_novo_titulo,
+                            livro_novo_autor,
+                            livro_novo_ano_de_publicacao,
+                            livro_ID,
+                        )
+                    )
 
                 except:
                     print("Ocorreu um erro ao tentar editar o livro")
 
         elif opcao == "4":
             livroID = input("Digite o ID do livro que deseja excluir: ")
-            if livroID.isdigit() == False:
-                print("Por favor digite um numero de ID valido")
+
+            if utils.verificar_id(livroID) == False:
+                print("Digite um numero de ID valido")
 
             else:
                 try:
-                    resultado = biblioteca.remover_livro(livroID)
-                    if resultado == True:
-                        print("Livro excluido com sucesso")
-                    else:
-                        print("Livro não encontrado")
+                    print(biblioteca.remover_livro(livroID))
+
                 except:
                     print("Ocorreu um erro ao tentar excluir o livro")
 
@@ -93,8 +99,8 @@ def main():
 
             try:
                 print("Livros encontrados:")
-                resultado = biblioteca.buscar_livro(livroTitulo)
-                if resultado == False:
+                livro_encontrado = biblioteca.buscar_livro(livroTitulo)
+                if livro_encontrado == False:
                     print("Nenhum livro encontrado")
 
             except:
@@ -106,11 +112,11 @@ def main():
 
         elif opcao == "7":
             livroID = input("Digite o ID do livro que deseja mudar o status: ")
-            if livroID.isdigit() == False:
-                print("Por favor digite um numero de ID valido")
-            
+            if utils.verificar_id(livroID) == False:
+                print("Digite um numero de ID valido")
+
             else:
-               print(biblioteca.gerenciar_status(livroID))
+                print(biblioteca.gerenciar_status(livroID))
 
         elif opcao == "8":
             print("Saindo...")

@@ -1,4 +1,5 @@
 import json
+import utils
 
 
 class Livro:
@@ -9,16 +10,13 @@ class Livro:
         self.ID = ID
         self.status = status
 
-    def marcar_como_emprestado(self):
-        self.status = "Emprestado"
-
-    def marcar_como_disponivel(self):
-        self.status = "Disponivel"
-
 
 class Biblioteca:
     def __init__(self, nome="Alex Library"):
         self.nome = nome
+
+        if utils.ler_dados() == False:
+            utils.criar_dados()
 
     def adicionar_livro(self, livro):
         livroDict = {
@@ -28,36 +26,32 @@ class Biblioteca:
             "id": livro.ID,
             "status": livro.status,
         }
-        with open("livros.json", "r") as f:
-            data = json.loads(f.read())
+
+        data = utils.ler_dados()
+        if data == False:
+            return "Não foi possível adicionar o livro"
 
         data["lista_livros"].append(livroDict)
 
-        with open("livros.json", "w") as f:
-            f.write(json.dumps(data, indent=1))
+        utils.salvar_dados(data)
+
+        return "Livro adicionado com sucesso"
 
     def remover_livro(self, livroID):
-        with open("livros.json", "r") as f:
-            data = json.loads(f.read())
-            nova_data = [
-                livro for livro in data["lista_livros"] if livro["id"] != livroID
-            ]
+        data = utils.ler_dados()
+        nova_data = [livro for livro in data["lista_livros"] if livro["id"] != livroID]
 
         if nova_data == data["lista_livros"]:
-            return False
+            return "Livro não encontrado"
 
         else:
             data["lista_livros"] = nova_data
-            with open("livros.json", "w") as f:
-                f.write(json.dumps(data, indent=1))
-            return True
+            utils.salvar_dados(data)
+            return "Livro removido com sucesso"
 
     def editar_livro(self, novo_titulo, novo_autor, novo_ano_publicacao, livroID):
-        with open("livros.json", "r") as f:
-            data = json.loads(f.read())
-
-        with open("livros.json", "r") as f:
-            data2 = json.loads(f.read())
+        data = utils.ler_dados()
+        data2 = utils.ler_dados()
 
         for livro in data["lista_livros"]:
             if livro["id"] == livroID:
@@ -67,73 +61,59 @@ class Biblioteca:
 
         if data["lista_livros"] == data2["lista_livros"]:
             return "Livro não encontrado"
-        else:
-            with open("livros.json", "w") as f:
-                f.write(json.dumps(data, indent=1))
 
+        else:
+            utils.salvar_dados(data)
             return "Livro editado com sucesso"
 
     def listar_livros(self):
-        with open("livros.json", "r") as f:
-            data = json.loads(f.read())
-            if data == "":
-                print("Nenhum livro cadastrado")
-            else:
-                for livro in data["lista_livros"]:
-                    print(f"ID: {livro['id']}")
-                    print(f"Título: {livro['titulo']}")
-                    print(f"Autor: {livro['autor']}")
-                    print(f"Ano de Publicação: {livro['ano_publicacao']}")
-                    print(f"Status: {livro['status']}", end="\n\n")
+        data = utils.ler_dados()
 
-    def buscar_livro(self, titulo):
-        livro_encontrado = False
-        with open("livros.json", "r") as f:
-            data = json.loads(f.read())
+        if len(data["lista_livros"]) == 0:
+            print("Nenhum livro cadastrado")
+
+        else:
             for livro in data["lista_livros"]:
-                if livro["titulo"] == titulo:
-                    print(f"ID: {livro['id']}")
-                    print(f"Título: {livro['titulo']}")
-                    print(f"Autor: {livro['autor']}")
-                    print(f"Ano de Publicação: {livro['ano_publicacao']}")
-                    print(f"Status: {livro['status']}", end="\n\n")
-                    livro_encontrado = True
+                utils.exibir_informacoes(livro)
+
+    def buscar_livro(self, titulo) -> bool:
+        livro_encontrado = False
+        data = utils.ler_dados()
+
+        for livro in data["lista_livros"]:
+            if livro["titulo"] == titulo:
+                utils.exibir_informacoes(livro)
+                livro_encontrado = True
+
         return livro_encontrado
 
     def gerar_relatorio(self):
         Disponivel = 0
         Emprestado = 0
-        with open("livros.json", "r") as f:
-            data = json.loads(f.read())
-            print("Relatório de Livros")
-            print(f"Quantidade de Livros: {len(data['lista_livros'])}")
-            for i in data["lista_livros"]:
-                if i["status"] == "Disponivel":
-                    Disponivel += 1
-                else:
-                    Emprestado += 1
-            print(f"Quantidade de Livros Disponíveis: {Disponivel}")
-            print(f"Quantidade de Livros Emprestados: {Emprestado}")
+        data = utils.ler_dados()
+        print("Relatório de Livros")
+        print(f"Quantidade de Livros: {len(data['lista_livros'])}")
+
+        for i in data["lista_livros"]:
+            if i["status"] == "Disponivel":
+                Disponivel += 1
+
+            else:
+                Emprestado += 1
+
+        print(f"Quantidade de Livros Disponíveis: {Disponivel}")
+        print(f"Quantidade de Livros Emprestados: {Emprestado}")
 
     def gerenciar_status(self, livroID):
         try:
-            with open("livros.json", "r") as f:
-                data = json.loads(f.read())
+            data = utils.ler_dados()
 
             for livro in data["lista_livros"]:
-                if livro["id"] == livroID and livro["status"] == "Disponivel":
-                    livro["status"] = "Emprestado"
-                    with open("livros.json", "w") as f:
-                        f.write(json.dumps(data, indent=1))
+                    novo_status = utils.mudar_status(livro,livroID)
+                    livro["status"] = novo_status[0]
+                    utils.salvar_dados(data)
 
-                    return "Livro emprestado com sucesso" 
-
-                elif livro["id"] == livroID and livro["status"] == "Emprestado":
-                    livro["status"] = "Disponivel"
-                    with open("livros.json", "w") as f:
-                        f.write(json.dumps(data, indent=1))
-
-                    return "Livro devolvido com sucesso"
+                    return novo_status[1]
         except:
             print("Ocorreu um erro ao tentar mudar o status do livro")
 
