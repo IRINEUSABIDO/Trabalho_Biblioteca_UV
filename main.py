@@ -16,9 +16,12 @@ def main():
         print("3. Editar Livro")
         print("4. Excluir Livro")
         print("5. Buscar Livro")
-        print("6. Sair")
+        print("6. Gerar Relatório")
+        print("7. Gerenciar Status")
+        print("8. Sair")
         opcao = input("Escolha uma opção: ")
         print("")
+
         if opcao == "1":
             livroTitulo = input("Digite o título do livro: ")
             livroAutor = input("Digite o autor do livro: ")
@@ -59,16 +62,12 @@ def main():
             else:
 
                 try:
-                    resultado = biblioteca.editar_livro(
+                    print(biblioteca.editar_livro(
                         livroNovoTitulo,
                         livroNovoAutor,
                         livroNovoAnoDePublicacao,
                         livroID,
-                    )
-                    if resultado == True:
-                        print("Livro editado com sucesso")
-                    else:
-                        print("Livro não encontrado")
+                    ))
 
                 except:
                     print("Ocorreu um erro ao tentar editar o livro")
@@ -102,8 +101,18 @@ def main():
                 print(
                     "Ocorreu um erro ao tentar buscar o livro, verefique o titulo ou se o livro existe"
                 )
-
         elif opcao == "6":
+            biblioteca.gerar_relatorio()
+
+        elif opcao == "7":
+            livroID = input("Digite o ID do livro que deseja mudar o status: ")
+            if livroID.isdigit() == False:
+                print("Por favor digite um numero de ID valido")
+            
+            else:
+               print(biblioteca.gerenciar_status(livroID))
+
+        elif opcao == "8":
             print("Saindo...")
             break
 
