@@ -107,12 +107,14 @@ class Biblioteca:
             data = utils.ler_dados()
 
             for livro in data["lista_livros"]:
-                    novo_status = utils.mudar_status(livro,livroID)
-                    livro["status"] = novo_status[0]
-                    utils.salvar_dados(data)
+                    if livro["id"] == livroID:
+                        novo_status = utils.mudar_status(livro,livroID)
+                        livro["status"] = novo_status[0]
+                        utils.salvar_dados(data)
 
-                    return novo_status[1]
+                        return novo_status[1]
         except:
             print("Ocorreu um erro ao tentar mudar o status do livro")
+            return False
 
         return "Livro não encontrado"
